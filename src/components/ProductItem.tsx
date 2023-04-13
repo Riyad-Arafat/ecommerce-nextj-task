@@ -31,6 +31,7 @@ const ProductItem = React.memo(
 
     const handelOnClick = React.useCallback(() => {
       if (isProductInCart) {
+        quantity.current = 1;
         removeItemFromCart(product);
       } else {
         addItemToCart({
