@@ -9,4 +9,5 @@ export type IProduct = {
     rate: number;
     count: number;
   };
+  quantity: number;
 };

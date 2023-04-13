@@ -15,7 +15,20 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
   // create a function to add an item to the cart
   const addItemToCart = useCallback(
     (item: IProduct) => {
-      setCartItems([...cartItems, item]);
+      // check if the item is already in the cart and update item
+      const isItemInCart = cartItems.some(
+        (cartItem) => cartItem.id === item.id
+      );
+      if (isItemInCart) {
+        const updatedCartItems = cartItems.map((cartItem) => {
+          if (cartItem.id === item.id) return item;
+
+          return cartItem;
+        });
+        setCartItems(updatedCartItems);
+      } else {
+        setCartItems((prevCartItems) => [...prevCartItems, item]);
+      }
     },
     [cartItems]
   );

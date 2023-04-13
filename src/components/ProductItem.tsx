@@ -7,6 +7,7 @@ import {
   CardContent,
   Typography,
   Button,
+  TextField,
 } from "@mui/material";
 import { IProduct } from "../typings/product";
 import { ICartContext } from "../typings/cart";
@@ -21,6 +22,8 @@ const ProductItem = React.memo(
     const { cartItems, addItemToCart, removeItemFromCart } =
       React.useContext<ICartContext>(CartContext);
 
+    const quantity = React.useRef<number>(product.quantity || 1);
+
     // check if the product is already in the cart
     const isProductInCart = React.useMemo(() => {
       return cartItems.some((item) => item.id === product.id);
@@ -30,9 +33,23 @@ const ProductItem = React.memo(
       if (isProductInCart) {
         removeItemFromCart(product);
       } else {
-        addItemToCart(product);
+        addItemToCart({
+          ...product,
+          quantity: quantity.current,
+        });
       }
     }, [isProductInCart, product, addItemToCart, removeItemFromCart]);
+
+    const handelOnChange = React.useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        quantity.current = Number(event.target.value);
+        addItemToCart({
+          ...product,
+          quantity: quantity.current,
+        });
+      },
+      [addItemToCart, product]
+    );
 
     return (
       <Grid item xs={12} sm={6} md={4} key={product.id}>
@@ -60,6 +77,19 @@ const ProductItem = React.memo(
               </Typography>
             </CardContent>
           </CardActionArea>
+          {isProductInCart && (
+            <TextField
+              label="Quantity"
+              type="number"
+              defaultValue={quantity.current}
+              onChange={handelOnChange}
+              style={{
+                marginBlock: "1rem",
+                marginInline: "1rem",
+              }}
+            />
+          )}
+
           <Button
             variant="contained"
             color={isProductInCart ? "error" : "primary"}
