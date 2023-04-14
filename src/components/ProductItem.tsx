@@ -26,7 +26,7 @@ const ProductItem = React.memo(
       updateItemInCart,
     } = React.useContext<ICartContext>(CartContext);
 
-    const quantity = React.useRef(product.quantity || 1);
+    const quantity = React.useRef(isProductInCart(product)?.quantity || 1);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handelOnClick = React.useCallback(() => {
@@ -113,7 +113,9 @@ const ProductItem = React.memo(
     );
   },
 
-  (prevProps, nextProps) => prevProps.product.id === nextProps.product.id
+  (prevProps, nextProps) =>
+    prevProps.product.id === nextProps.product.id ||
+    prevProps.product.quantity === nextProps.product.quantity
 );
 
 export default ProductItem;

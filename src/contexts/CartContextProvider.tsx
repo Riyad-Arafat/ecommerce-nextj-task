@@ -7,7 +7,7 @@ export const CartContext = createContext<ICartContext>({
   addItemToCart: () => {},
   removeItemFromCart: () => {},
   updateItemInCart: () => {},
-  isProductInCart: () => false,
+  isProductInCart: () => undefined,
 });
 
 const CartContextProvider = (props: React.PropsWithChildren) => {
@@ -49,7 +49,7 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
   );
 
   const isProductInCart = useCallback(
-    (item: IProduct) => cartItems.some((i) => i.id === item.id),
+    (item: IProduct) => cartItems.find((cartItem) => cartItem.id === item.id),
     [cartItems]
   );
 
