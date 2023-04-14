@@ -19,7 +19,7 @@ type ProductItemProps = {
 
 const ProductItem = React.memo(
   ({ product }: ProductItemProps) => {
-    const { cartItems, addItemToCart, removeItemFromCart } =
+    const { cartItems, addItemToCart, removeItemFromCart, updateItemInCart } =
       React.useContext<ICartContext>(CartContext);
 
     const quantity = React.useRef<number>(product.quantity || 1);
@@ -44,12 +44,12 @@ const ProductItem = React.memo(
     const handelOnChange = React.useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         quantity.current = Number(event.target.value);
-        addItemToCart({
+        updateItemInCart({
           ...product,
           quantity: quantity.current,
         });
       },
-      [addItemToCart, product]
+      [product, updateItemInCart]
     );
 
     return (

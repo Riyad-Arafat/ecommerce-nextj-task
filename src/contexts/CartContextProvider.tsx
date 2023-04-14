@@ -6,6 +6,7 @@ export const CartContext = createContext<ICartContext>({
   cartItems: [],
   addItemToCart: () => {},
   removeItemFromCart: () => {},
+  updateItemInCart: () => {},
 });
 
 const CartContextProvider = (props: React.PropsWithChildren) => {
@@ -13,7 +14,12 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
   const [cartItems, setCartItems] = useState<IProduct[]>([]);
 
   // create a function to add an item to the cart
-  const addItemToCart = useCallback(
+  const addItemToCart = useCallback((item: IProduct) => {
+    setCartItems((prevItems) => [...prevItems, item]);
+  }, []);
+
+  // create a function to update an item in the cart
+  const updateItemInCart = useCallback(
     (item: IProduct) => {
       // check if the item is already in the cart and update item
       const isItemInCart = cartItems.some(
@@ -22,12 +28,9 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
       if (isItemInCart) {
         const updatedCartItems = cartItems.map((cartItem) => {
           if (cartItem.id === item.id) return item;
-
           return cartItem;
         });
         setCartItems(updatedCartItems);
-      } else {
-        setCartItems((prevCartItems) => [...prevCartItems, item]);
       }
     },
     [cartItems]
@@ -46,7 +49,7 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addItemToCart, removeItemFromCart }}
+      value={{ cartItems, addItemToCart, removeItemFromCart, updateItemInCart }}
     >
       {props.children}
     </CartContext.Provider>
