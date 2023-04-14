@@ -11,12 +11,15 @@ export default function CartPage() {
   const { cartItems } = React.useContext<ICartContext>(CartContext);
 
   const cartItemsTotal = React.useMemo(() => {
-    return cartItems.length;
+    return cartItems.reduce(
+      (acc: number, item: IProduct) => acc + item.quantity,
+      0
+    );
   }, [cartItems]);
 
   const cartItemsCost = React.useMemo(() => {
     return cartItems.reduce(
-      (acc: number, item: IProduct) => acc + item.price,
+      (acc: number, item: IProduct) => acc + item.price * item.quantity,
       0
     );
   }, [cartItems]);
