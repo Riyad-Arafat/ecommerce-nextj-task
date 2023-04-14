@@ -6,4 +6,5 @@ export type ICartContext = {
   addItemToCart: (item: IProduct) => void;
   removeItemFromCart: (item: IProduct) => void;
   updateItemInCart: (item: IProduct) => void;
+  isProductInCart: (item: IProduct) => boolean;
 };

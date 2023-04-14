@@ -7,6 +7,7 @@ export const CartContext = createContext<ICartContext>({
   addItemToCart: () => {},
   removeItemFromCart: () => {},
   updateItemInCart: () => {},
+  isProductInCart: () => false,
 });
 
 const CartContextProvider = (props: React.PropsWithChildren) => {
@@ -47,9 +48,20 @@ const CartContextProvider = (props: React.PropsWithChildren) => {
     [cartItems]
   );
 
+  const isProductInCart = useCallback(
+    (item: IProduct) => cartItems.some((i) => i.id === item.id),
+    [cartItems]
+  );
+
   return (
     <CartContext.Provider
-      value={{ cartItems, addItemToCart, removeItemFromCart, updateItemInCart }}
+      value={{
+        cartItems,
+        addItemToCart,
+        removeItemFromCart,
+        updateItemInCart,
+        isProductInCart,
+      }}
     >
       {props.children}
     </CartContext.Provider>

@@ -7,7 +7,7 @@ type ProductListProps = {
   products: IProduct[];
 };
 
-const ProductList = ({ products }: ProductListProps) => {
+const ProductList = React.memo(({ products }: ProductListProps) => {
   if (products.length === 0) {
     return (
       <Typography variant="h6" textAlign="center" width="100%">
@@ -23,6 +23,6 @@ const ProductList = ({ products }: ProductListProps) => {
       ))}
     </Grid>
   );
-};
+});
 
 export default ProductList;

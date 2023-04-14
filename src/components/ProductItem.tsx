@@ -19,18 +19,18 @@ type ProductItemProps = {
 
 const ProductItem = React.memo(
   ({ product }: ProductItemProps) => {
-    const { cartItems, addItemToCart, removeItemFromCart, updateItemInCart } =
-      React.useContext<ICartContext>(CartContext);
+    const {
+      isProductInCart,
+      addItemToCart,
+      removeItemFromCart,
+      updateItemInCart,
+    } = React.useContext<ICartContext>(CartContext);
 
-    const quantity = React.useRef<number>(product.quantity || 1);
-
-    // check if the product is already in the cart
-    const isProductInCart = React.useMemo(() => {
-      return cartItems.some((item) => item.id === product.id);
-    }, [cartItems, product.id]);
+    const quantity = React.useRef(product.quantity || 1);
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handelOnClick = React.useCallback(() => {
-      if (isProductInCart) {
+      if (isProductInCart(product)) {
         quantity.current = 1;
         removeItemFromCart(product);
       } else {
@@ -43,7 +43,12 @@ const ProductItem = React.memo(
 
     const handelOnChange = React.useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        quantity.current = Number(event.target.value);
+        const value = Number(event.target.value);
+        if (value <= 0) {
+          inputRef.current!.value = "1";
+          return;
+        }
+        quantity.current = value;
         updateItemInCart({
           ...product,
           quantity: quantity.current,
@@ -78,12 +83,16 @@ const ProductItem = React.memo(
               </Typography>
             </CardContent>
           </CardActionArea>
-          {isProductInCart && (
+          {isProductInCart(product) && (
             <TextField
               label="Quantity"
               type="number"
               defaultValue={quantity.current}
-              onChange={handelOnChange}
+              // onChange={handelOnChange}
+              inputRef={inputRef}
+              InputProps={{
+                onChange: handelOnChange,
+              }}
               style={{
                 marginBlock: "1rem",
                 marginInline: "1rem",
@@ -93,11 +102,11 @@ const ProductItem = React.memo(
 
           <Button
             variant="contained"
-            color={isProductInCart ? "error" : "primary"}
+            color={isProductInCart(product) ? "error" : "primary"}
             fullWidth
             onClick={handelOnClick}
           >
-            {isProductInCart ? "Remove from cart" : "Add to cart"}
+            {isProductInCart(product) ? "Remove from cart" : "Add to cart"}
           </Button>
         </Card>
       </Grid>
